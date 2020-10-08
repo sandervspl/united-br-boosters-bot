@@ -13,7 +13,7 @@ export default abstract class Command {
 
   constructor(
     protected readonly client: Discord.Client,
-    public readonly listen: string | ((msg: string) => boolean),
+    public readonly listen: string | ((msg: Discord.Message, trimmedMsg: string) => boolean),
     options?: Options,
   ) {
     this.options = {
@@ -45,19 +45,23 @@ export default abstract class Command {
       .toLowerCase()
       .trim();
 
-    // Check if message starts with the command prefix
-    if (this.options.prefix && !msg.content.startsWith(this.options.prefix)) {
-      return;
-    }
+    let message = content;
 
-    // Remove prefix
-    const message = content.slice(1);
+    // Check if message starts with the command prefix
+    if (this.options.prefix) {
+      if (!msg.content.startsWith(this.options.prefix)) {
+        return;
+      }
+
+      // Remove prefix
+      message = content.slice(1);
+    }
 
     // Check if the message we received is the same as what we listen to
     let match = false;
 
     if (typeof this.listen === 'function') {
-      match = this.listen(message);
+      match = this.listen(msg, message);
     }
 
     if (typeof this.listen == 'string') {

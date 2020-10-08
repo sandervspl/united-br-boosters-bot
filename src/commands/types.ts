@@ -8,4 +8,5 @@ export type Options = {
   prefix?: string;
   cooldown?: number;
   roles?: Roles[];
+  channels?: string[];
 }
