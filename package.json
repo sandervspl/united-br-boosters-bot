@@ -1,0 +1,50 @@
+{
+  "name": "united-br-boosters-bot",
+  "version": "0.1.0",
+  "description": "Code for united br boosters bot",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpileOnly -r tsconfig-paths/register src/index.ts",
+    "build": "npm run clean && tsc",
+    "start": "node -r ./tsconfig-paths-bootstrap.js dist/index.js",
+    "clean": "rimraf dist/",
+    "lint": "eslint --ext .ts --ext .tsx src/",
+    "test": "clear && jest --verbose",
+    "test:watch": "npm test -- --watch",
+    "test:cov": "npm test -- --coverage"
+  },
+  "keywords": [],
+  "author": "Sander Vispoel <contact@sandervispoel.com>",
+  "license": "ISC",
+  "dependencies": {
+    "cron": "1.8.2",
+    "discord.js": "12.3.1",
+    "dotenv": "8.2.0",
+    "express": "4.17.1",
+    "lodash": "4.17.20",
+    "moment": "2.29.1",
+    "ts-toolbelt": "8.0.7",
+    "tsconfig-paths": "3.9.0"
+  },
+  "devDependencies": {
+    "@types/cron": "1.7.2",
+    "@types/dotenv": "8.2.0",
+    "@types/express": "4.17.8",
+    "@types/jest": "26.0.14",
+    "@types/lodash": "4.14.161",
+    "@types/moment": "2.13.0",
+    "@types/node": "14.11.6",
+    "@typescript-eslint/eslint-plugin": "4.4.0",
+    "@typescript-eslint/parser": "4.4.0",
+    "eslint": "7.10.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-jest": "24.1.0",
+    "jest": "26.5.2",
+    "ts-jest": "26.4.1",
+    "ts-node-dev": "1.0.0-pre.63",
+    "tsconfig-paths-jest": "0.0.1",
+    "typescript": "4.0.3",
+    "typescript-eslint-parser": "22.0.0",
+    "whatwg-fetch": "3.4.1"
+  }
+}
