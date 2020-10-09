@@ -70,24 +70,24 @@ export class Amount extends Command {
           .find({ name: boostServerName })
           .value();
 
-        const table = new AsctiiTable(`Total ${boostServerName} = ${boostServerValue.total}`);
+        const table = new AsctiiTable();
         table
           .removeBorder()
-          .setHeading('Server', 'Boost Server', 'Boosted Characters');
+          .setHeading('Server', '', 'Boost Server', 'Boosted');
         // let resultMsg = `Total ${boostServerName} = ${boostServerValue.total}`;
 
         let serverFromName: Servers;
         for (serverFromName in boostServerValue.from) {
           const serverFromBoostAmount = boostServerValue.from[serverFromName];
 
-          if (serverFromName == playerServerName) continue;
+          if (serverFromName == boostServerName) continue;
 
           // resultMsg += `\n${serverFromName} -> ${boostServerName} = ${serverFrom}`;
-          table.addRow(serverFromName, boostServerName, serverFromBoostAmount);
+          table.addRow(serverFromName, '->', boostServerName, serverFromBoostAmount);
         }
 
         // msg.channel.send(resultMsg);
-        msg.channel.send('```' + table.toString() + '```');
+        msg.channel.send(`Total ${boostServerName} = ${boostServerValue.total}\n` + '```' + table.toString() + '```');
       }
     });
   }
