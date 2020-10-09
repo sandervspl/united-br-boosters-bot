@@ -1,11 +1,11 @@
 #!/bin/bash
-PROJECT='discord-bot'
+PROJECT='united-br-boosters-bot'
 
 ROOT_USER=root
 
 HOST=134.209.85.102
 USER=sandervspl
-PORT=5000
+PORT=6000
 INSTANCES=1
 
 APP_ENV=production
