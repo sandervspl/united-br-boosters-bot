@@ -38,12 +38,12 @@ export class Amount extends Command {
 
       if (msg.member?.id && serverRole) {
         const rolesArray = Array.from(serverRole);
-        const playerServerName = rolesArray[0][1].name as Servers;
+        const playerServerName = rolesArray[0][1].name.toLowerCase() as Servers;
 
         let boostServerName = '' as Servers;
         for (const server of serverConfig) {
           if (msg.channel.id === server.channelId) {
-            boostServerName = server.name;
+            boostServerName = server.name.toLowerCase() as Servers;
           }
         }
 
@@ -79,6 +79,7 @@ export class Amount extends Command {
 
         let serverFromName: Servers;
         for (serverFromName in boostServerValue.from) {
+          serverFromName = serverFromName.toLowerCase() as Servers;
           const serverFromBoostAmount = boostServerValue.from[serverFromName];
 
           if (serverFromName == boostServerName) continue;
