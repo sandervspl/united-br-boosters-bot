@@ -10,7 +10,9 @@ type DB = {
   servers: Server[];
 };
 
-type Player = {
+export type Player = {
+  name: string;
+  server: string;
   memberId: string;
 } & {
   [server in Servers]: number;

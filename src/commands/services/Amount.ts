@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import AsctiiTable from 'ascii-table';
 import { serverConfig, Servers } from '../../constants';
-import db from '../../db';
+import db, { Player } from '../../db';
 import Command from '../Command';
 
 export class Amount extends Command {
@@ -88,6 +88,65 @@ export class Amount extends Command {
 
         // msg.channel.send(resultMsg);
         msg.channel.send(`Total ${boostServerName} = ${boostServerValue.total}\n` + '```' + table.toString() + '```');
+
+
+        // Update player stats
+        const playerValue = db.get('players')
+          .find({ memberId: msg.member.id })
+          .value();
+
+        if (playerValue) {
+          db.get('players')
+            .find({ memberId: msg.member.id })
+            .assign({
+              [boostServerName]: playerValue[boostServerName] + amount,
+            })
+            .write();
+        } else {
+          const serverAmounts = {} as Record<Servers, number>;
+          for (const server of serverConfig) {
+            serverAmounts[server.name] = 0;
+          }
+
+          serverAmounts[boostServerName] = amount;
+
+          db.get('players')
+            .push({
+              memberId: msg.member.id,
+              name: msg.member.displayName,
+              server: playerServerName,
+              ...serverAmounts,
+            })
+            .write();
+        }
+
+        // Check if name changed
+        if (playerValue.name !== msg.member.displayName) {
+          db.get('players')
+            .find({ memberId: msg.member.id })
+            .assign({ name: msg.member.displayName })
+            .write();
+        }
+
+        // Send message to player showing his total boosts
+        msg.member.createDM().then((dmChannel) => {
+          const playerValue = db.get('players')
+            .find({ memberId: msg.member?.id })
+            .value();
+
+          const table = new AsctiiTable()
+            .removeBorder()
+            .setHeading('Server', '', 'Boost Server', 'Boosted');
+
+          let key: keyof Player;
+          for (key in playerValue) {
+            if (typeof playerValue[key] === 'number') {
+              table.addRow(key, '->', boostServerName, playerValue[key]);
+            }
+          }
+
+          dmChannel.send('Your current total for the week:\n' + '```' + table.toString() + '```');
+        });
       }
     });
   }
