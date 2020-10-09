@@ -110,6 +110,8 @@ export class Amount extends Command {
         for (serverFromName in boostServerValue.from) {
           const serverFromBoostAmount = boostServerValue.from[serverFromName];
 
+          if (serverFromName == playerServerName) continue;
+
           // resultMsg += `\n${serverFromName} -> ${boostServerName} = ${serverFrom}`;
           table.addRow(serverFromName, boostServerName, serverFromBoostAmount);
         }
