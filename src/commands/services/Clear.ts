@@ -1,11 +1,12 @@
 import Discord from 'discord.js';
+import { serverConfig } from '../../constants';
 import Command from '../Command';
 
 export class Clear extends Command {
   constructor(discordClient: Discord.Client) {
     super(discordClient, 'clear', {
       prefix: '!',
-      channels: ['763723790407696454', '763749549918912575'],
+      channels: serverConfig.map((server) => server.channelId),
     });
 
     this.onCommand((msg) => {

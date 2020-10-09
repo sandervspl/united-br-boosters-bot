@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import AsctiiTable from 'ascii-table';
-import { serverConfig, Servers } from '../../constants';
+import { ROLES, serverConfig, Servers } from '../../constants';
 import db, { Player } from '../../db';
 import Command from '../Command';
 
@@ -19,19 +19,16 @@ export class Amount extends Command {
 
       return isNumberMsg;
     }, {
-      channels: ['763723790407696454', '763749549918912575'],
+      channels: serverConfig.map((server) => server.channelId),
     });
 
     this.onCommand((msg) => {
       const amount = Number(msg.content);
       const serverRole = msg.member?.roles.cache.filter((role) => {
         return (
-          // admin
-          role.id !== '763739953283727390'
-          // leader
-          && role.id !== '763740020296646667'
-          // @everyone
-          && role.id !== '611155317115584512'
+          role.id !== ROLES.admin
+          && role.id !== ROLES.leader
+          && role.id !== ROLES.everyone
         );
       });
 

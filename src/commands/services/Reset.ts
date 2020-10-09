@@ -1,4 +1,5 @@
 import Discord from 'discord.js';
+import { serverConfig } from '../../constants';
 import db from '../../db';
 import Command from '../Command';
 
@@ -9,7 +10,7 @@ export class Reset extends Command {
   constructor(discordClient: Discord.Client) {
     super(discordClient, 'reset', {
       prefix: '!',
-      channels: ['763723790407696454', '763749549918912575'],
+      channels: serverConfig.map((server) => server.channelId),
     });
 
     this.onCommand((msg) => {

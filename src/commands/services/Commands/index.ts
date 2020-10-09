@@ -1,10 +1,10 @@
 import Discord from 'discord.js';
-import commands from '..';
 import Command from 'commands/Command';
+import commands from '..';
 
 export class Commands extends Command {
-  public readonly excludedCommands = ['amount', 'commands'];
-  public readonly commandNames = commands
+  readonly excludedCommands = ['amount', 'commands'];
+  readonly commandNames = commands
     .map((cmd) => cmd.name.toLowerCase())
     .filter((cmd) => !this.excludedCommands.includes(cmd));
 
