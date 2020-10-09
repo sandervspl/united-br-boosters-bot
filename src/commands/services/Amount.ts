@@ -66,36 +66,6 @@ export class Amount extends Command {
           })
           .write();
 
-        // const member = db.get('players').find({ memberId: msg.member.id }).value();
-
-        // if (member) {
-        //   db.get('players')
-        // } else {
-        //   const defaultValues = {
-        //     memberId: msg.member.id,
-        //     firemaw: 0,
-        //     gehennas: 0,
-        //     golemagg: 0,
-        //     lucifron: 0,
-        //     mograine: 0,
-        //   };
-
-        //   defaultValues[boostServerName] += Number(amount);
-
-        //   db.get('players')
-        //     .push()
-        //     .write();
-
-        //   const serverValue = db.get('servers').find({ name: boostServerName }).value();
-
-        //   db.get('servers')
-        //     .find({ name: boostServerName })
-        //     .assign({
-        //       total: serverValue.total + amount,
-        //     })
-        //     .write();
-        // }
-
         const boostServerValue = db.get('servers')
           .find({ name: boostServerName })
           .value();
