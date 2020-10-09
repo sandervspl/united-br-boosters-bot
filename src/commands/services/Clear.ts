@@ -6,7 +6,7 @@ export class Clear extends Command {
   constructor(discordClient: Discord.Client) {
     super(discordClient, 'clear', {
       prefix: '!',
-      channels: serverConfig.map((server) => server.channelId),
+      channels: serverConfig.map((server) => server.channelId).concat(['763723790407696454', '763749549918912575']),
     });
 
     this.onCommand((msg) => {

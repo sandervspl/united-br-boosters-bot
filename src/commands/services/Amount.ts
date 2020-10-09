@@ -9,7 +9,11 @@ export class Amount extends Command {
     super(discordClient, (msg, trimmedMsg) => {
       const isNumberMsg = !isNaN(Number(trimmedMsg));
 
-      if (!isNumberMsg && !trimmedMsg.includes('clear')) {
+      if (
+        !isNumberMsg
+        && !trimmedMsg.includes('clear')
+        && (msg.member?.id && !['298673420181438465', '763721404134588447'].includes(msg.member.id))
+      ) {
         msg.delete().then(() => {
           msg.author.createDM().then((dmChannel) => {
             dmChannel.send('Your message was removed because you can only send the amount of boosts in this channel.');
@@ -19,7 +23,7 @@ export class Amount extends Command {
 
       return isNumberMsg;
     }, {
-      channels: serverConfig.map((server) => server.channelId),
+      channels: serverConfig.map((server) => server.channelId).concat(['763723790407696454', '763749549918912575']),
     });
 
     this.onCommand((msg) => {
@@ -118,7 +122,7 @@ export class Amount extends Command {
         }
 
         // Check if name changed
-        if (playerValue.name !== msg.member.displayName) {
+        if (playerValue && playerValue.name !== msg.member.displayName) {
           db.get('players')
             .find({ memberId: msg.member.id })
             .assign({ name: msg.member.displayName })

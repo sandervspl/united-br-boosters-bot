@@ -17,11 +17,15 @@ export const serverConfig: ServerConfig[] = [
     name: 'firemaw',
     channelId: '763493482961829969',
     roleId: '763488022720151562',
+    // channelId: '763723790407696454',
+    // roleId: '763723661529972737',
   },
   {
     name: 'gehennas',
     channelId: '763493453190660126',
     roleId: '763488000008519692',
+    // channelId: '763749549918912575',
+    // roleId: '764128932042637343',
   },
   {
     name: 'mograine',
