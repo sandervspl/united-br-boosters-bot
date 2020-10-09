@@ -13,7 +13,7 @@ export default abstract class Command {
 
   constructor(
     protected readonly client: Discord.Client,
-    public readonly listen: string | ((msg: Discord.Message, trimmedMsg: string) => boolean),
+    readonly listen: string | ((msg: Discord.Message, trimmedMsg: string) => boolean),
     options?: Options,
   ) {
     this.options = {
@@ -29,8 +29,7 @@ export default abstract class Command {
     }
 
     if (
-      env.isProduction
-      && (
+      env.isProduction && (
         // Testing channel
         msg.channel.id === '561859968681115658'
         // Test suite channel
@@ -38,6 +37,12 @@ export default abstract class Command {
       )
     ) {
       return;
+    }
+
+    if (this.options.channels && this.options.channels.length > 0) {
+      if (!this.options.channels.includes(msg.channel.id)) {
+        return;
+      }
     }
 
     // Clean up message
@@ -65,6 +70,7 @@ export default abstract class Command {
     }
 
     if (typeof this.listen == 'string') {
+
       match = message.startsWith(this.listen);
     }
 

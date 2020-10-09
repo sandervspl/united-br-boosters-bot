@@ -1,0 +1,60 @@
+{
+  "players": [],
+  "servers": [
+    {
+      "name": "firemaw",
+      "total": 70,
+      "from": {
+        "firemaw": 20,
+        "gehennas": 50,
+        "mograine": 0,
+        "lucifron": 0,
+        "golemagg": 0
+      }
+    },
+    {
+      "name": "gehennas",
+      "total": 40,
+      "from": {
+        "firemaw": 30,
+        "gehennas": 10,
+        "mograine": 0,
+        "lucifron": 0,
+        "golemagg": 0
+      }
+    },
+    {
+      "name": "mograine",
+      "total": 0,
+      "from": {
+        "firemaw": 0,
+        "gehennas": 0,
+        "mograine": 0,
+        "lucifron": 0,
+        "golemagg": 0
+      }
+    },
+    {
+      "name": "lucifron",
+      "total": 0,
+      "from": {
+        "firemaw": 0,
+        "gehennas": 0,
+        "mograine": 0,
+        "lucifron": 0,
+        "golemagg": 0
+      }
+    },
+    {
+      "name": "golemagg",
+      "total": 0,
+      "from": {
+        "firemaw": 0,
+        "gehennas": 0,
+        "mograine": 0,
+        "lucifron": 0,
+        "golemagg": 0
+      }
+    }
+  ]
+}
