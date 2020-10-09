@@ -1,8 +1,7 @@
 {
   "apps": [{
     "name": "NAME",
-    "script": "/var/api/PROJECT/dist/index.js",
-    "node_args": "-r ./tsconfig-paths-bootstrap.js",
+    "script": "/var/api/PROJECT/dist/index",
     "cwd": "/var/api/PROJECT",
     "instances": INSTANCES,
     "env": {
