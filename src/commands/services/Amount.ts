@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import AsctiiTable from 'ascii-table';
 import { ROLES, serverConfig, Servers } from '../../constants';
-import db, { Player } from '../../db';
+import db from '../../db';
 import Command from '../Command';
 
 export class Amount extends Command {
@@ -131,24 +131,24 @@ export class Amount extends Command {
         }
 
         // Send message to player showing his total boosts
-        msg.member.createDM().then((dmChannel) => {
-          const playerValue = db.get('players')
-            .find({ memberId: msg.member?.id })
-            .value();
+        // msg.member.createDM().then((dmChannel) => {
+        //   const playerValue = db.get('players')
+        //     .find({ memberId: msg.member?.id })
+        //     .value();
 
-          const table = new AsctiiTable()
-            .removeBorder()
-            .setHeading('Server', '', 'Boost Server', 'Boosted');
+        //   const table = new AsctiiTable()
+        //     .removeBorder()
+        //     .setHeading('Server', '', 'Boost Server', 'Boosted');
 
-          let key: keyof Player;
-          for (key in playerValue) {
-            if (typeof playerValue[key] === 'number') {
-              table.addRow(key, '->', boostServerName, playerValue[key]);
-            }
-          }
+        //   let key: keyof Player;
+        //   for (key in playerValue) {
+        //     if (typeof playerValue[key] === 'number') {
+        //       table.addRow(key, '->', boostServerName, playerValue[key]);
+        //     }
+        //   }
 
-          dmChannel.send('Your current total for the week:\n' + '```' + table.toString() + '```');
-        });
+        //   dmChannel.send('Your current total for the week:\n' + '```' + table.toString() + '```');
+        // });
       }
     });
   }
