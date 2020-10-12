@@ -89,6 +89,9 @@ echo -e "🔑 $c Connecting to $HOST $nc"
 #Set-up new files, install packages and run server
 ssh $USER@$HOST << EOF
     echo -e "🐶 $c Initializing server $nc"
+
+    mv $PDIR*/db.json /var/api/db.json
+
     rm -rf $PDIR*
     mkdir -p $PDIR-$VERSION;
     chown $USER:$USER $PDIR-$VERSION;
@@ -98,6 +101,9 @@ ssh $USER@$HOST << EOF
     echo -e "👀 $c Extracting files $nc"
     tar -zxvf $PDIR-$VERSION/$FILENAME -C $PDIR-$VERSION;
     rm $PDIR-$VERSION/$FILENAME;
+
+    mv /var/api/db.json $PDIR-$VERSION/db.json
+
     echo -e "⚡️ $c Installing packages $nc"
     . /home/sandervspl/.nvm/nvm.sh;
     npm install --production --prefix $PDIR-$VERSION;
