@@ -29,18 +29,20 @@ export class Amount extends Command {
     this.onCommand((msg) => {
       const amount = Number(msg.content);
       const serverRole = msg.member?.roles.cache.filter((role) => {
-        return (
-          role.id !== ROLES.admin
-          && role.id !== ROLES.leader
-          && role.id !== ROLES.everyone
-        );
+        return serverConfig.map((server) => server.roleId).includes(role.id);
       });
 
       if (msg.member?.id && serverRole) {
         const rolesArray = Array.from(serverRole);
         const playerServerName = rolesArray[0][1].name.toLowerCase() as Servers;
 
-        if ([ROLES.admin, ROLES.leader, ROLES.everyone].includes(rolesArray[0][1].id)) {
+        console.log('-- Amount command called ---');
+        console.log('By:', msg.member.displayName);
+        console.log('Roles:', rolesArray.map((roles) => roles[1].name).join(', '));
+        console.log(JSON.stringify(rolesArray, null, 2));
+        console.log('playerServerName:', playerServerName);
+
+        if (!serverConfig.map((server) => server.roleId).includes(rolesArray[0][1].id)) {
           console.error('Error: Something went wrong grabbing server role!');
           console.error({ rolesArray });
           console.error({ member: msg.member });
