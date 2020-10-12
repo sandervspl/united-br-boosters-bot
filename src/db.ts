@@ -6,17 +6,17 @@ const adapter = new FileSync('db.json');
 const db = low<AdapterSync<DB>>(adapter);
 
 type DB = {
-  players: Player[];
+  // players: Player[];
   servers: Server[];
 };
 
-export type Player = {
-  name: string;
-  server: string;
-  memberId: string;
-} & {
-  [server in Servers]: number;
-};
+// export type Player = {
+//   name: string;
+//   server: string;
+//   memberId: string;
+// } & {
+//   [server in Servers]: number;
+// };
 
 type Server = {
   name: Servers;
@@ -27,7 +27,7 @@ type Server = {
 }
 
 db.defaults<DB>({
-  players: [],
+  // players: [],
   servers: serverConfig.map((cfg) => ({
     name: cfg.name,
     total: 0,

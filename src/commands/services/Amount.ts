@@ -83,6 +83,8 @@ export class Amount extends Command {
         return;
       }
 
+
+      // Update server total
       const serverValue = db.get('servers')
         .find({ name: boostServerName })
         .value();
@@ -102,6 +104,8 @@ export class Amount extends Command {
         .find({ name: boostServerName })
         .value();
 
+
+      // Create ASCII table for reply
       const table = new AsctiiTable();
       table
         .removeBorder()
@@ -121,42 +125,42 @@ export class Amount extends Command {
 
 
       // Update player stats
-      const playerValue = db.get('players')
-        .find({ memberId: msg.member.id })
-        .value();
+      // const playerValue = db.get('players')
+      //   .find({ memberId: msg.member.id })
+      //   .value();
 
-      if (playerValue) {
-        db.get('players')
-          .find({ memberId: msg.member.id })
-          .assign({
-            [boostServerName]: playerValue[boostServerName] + amount,
-          })
-          .write();
-      } else {
-        const serverAmounts = {} as Record<Servers, number>;
-        for (const server of serverConfig) {
-          serverAmounts[server.name] = 0;
-        }
+      // if (playerValue) {
+      //   db.get('players')
+      //     .find({ memberId: msg.member.id })
+      //     .assign({
+      //       [boostServerName]: playerValue[boostServerName] + amount,
+      //     })
+      //     .write();
+      // } else {
+      //   const serverAmounts = {} as Record<Servers, number>;
+      //   for (const server of serverConfig) {
+      //     serverAmounts[server.name] = 0;
+      //   }
 
-        serverAmounts[boostServerName] = amount;
+      //   serverAmounts[boostServerName] = amount;
 
-        db.get('players')
-          .push({
-            memberId: msg.member.id,
-            name: msg.member.displayName,
-            server: playerServerName,
-            ...serverAmounts,
-          })
-          .write();
-      }
+      //   db.get('players')
+      //     .push({
+      //       memberId: msg.member.id,
+      //       name: msg.member.displayName,
+      //       server: playerServerName,
+      //       ...serverAmounts,
+      //     })
+      //     .write();
+      // }
 
-      // Check if name changed
-      if (playerValue && playerValue.name !== msg.member.displayName) {
-        db.get('players')
-          .find({ memberId: msg.member.id })
-          .assign({ name: msg.member.displayName })
-          .write();
-      }
+      // // Check if name changed
+      // if (playerValue && playerValue.name !== msg.member.displayName) {
+      //   db.get('players')
+      //     .find({ memberId: msg.member.id })
+      //     .assign({ name: msg.member.displayName })
+      //     .write();
+      // }
     });
   }
 }
