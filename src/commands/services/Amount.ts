@@ -33,6 +33,8 @@ export class Amount extends Command {
           role.id !== ROLES.admin
           && role.id !== ROLES.leader
           && role.id !== ROLES.everyone
+          && role.id !== '763723790407696454'
+          && role.id !== '763749549918912575'
         );
       });
 
