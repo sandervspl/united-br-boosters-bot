@@ -157,26 +157,6 @@ export class Amount extends Command {
           .assign({ name: msg.member.displayName })
           .write();
       }
-
-      // Send message to player showing his total boosts
-      // msg.member.createDM().then((dmChannel) => {
-      //   const playerValue = db.get('players')
-      //     .find({ memberId: msg.member?.id })
-      //     .value();
-
-      //   const table = new AsctiiTable()
-      //     .removeBorder()
-      //     .setHeading('Server', '', 'Boost Server', 'Boosted');
-
-      //   let key: keyof Player;
-      //   for (key in playerValue) {
-      //     if (typeof playerValue[key] === 'number') {
-      //       table.addRow(key, '->', boostServerName, playerValue[key]);
-      //     }
-      //   }
-
-      //   dmChannel.send('Your current total for the week:\n' + '```' + table.toString() + '```');
-      // });
     });
   }
 }
