@@ -68,7 +68,7 @@ export default abstract class Command {
     let match = false;
 
     if (typeof this.listen === 'function') {
-      match = this.listen(msg, message);
+      match = await this.listen(msg, message);
     }
 
     if (typeof this.listen == 'string') {
