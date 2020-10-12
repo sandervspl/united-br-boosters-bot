@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import { ROLES, serverConfig } from '../../constants';
-import db from '../../db';
+// import db from '../../db';
 import Command from '../Command';
 
 /**
@@ -15,7 +15,7 @@ export class Reset extends Command {
     });
 
     this.onCommand((msg) => {
-      db.get('players').remove().write();
+      // db.get('players').remove().write();
       // db.get('servers').
 
       msg.member?.createDM().then((dmChannel) => {
