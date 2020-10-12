@@ -5,6 +5,8 @@ import { O } from 'ts-toolbelt';
 import env from 'helpers/env';
 import { Options, CommandCallback } from './types';
 
+type ListenFn = (msg: Discord.Message, trimmedMsg: string) => boolean | Promise<boolean>;
+
 export default abstract class Command {
   private cooldowns = new Discord.Collection();
   private readonly options: O.Required<Options, 'cooldown'> = {
@@ -13,7 +15,7 @@ export default abstract class Command {
 
   constructor(
     protected readonly client: Discord.Client,
-    readonly listen: string | ((msg: Discord.Message, trimmedMsg: string) => boolean),
+    readonly listen: string | ListenFn,
     options?: Options,
   ) {
     this.options = {
@@ -100,13 +102,11 @@ export default abstract class Command {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected onError = (msg: Discord.Message, err: any) => {
-    msg.channel.send('😅 You broke the bot.');
-
-    console.error(`Error '${this.listen}':`, err);
+  protected onError = (msg: Discord.Message) => {
+    msg.channel.send('Oops, something went wrong. 🤖 The server admin has been notified.');
   }
 
-  protected sendDMToAdmin = (...messages: string[]) => {
+  protected sendDMToAdmin = (...messages: (string | undefined)[]) => {
     this.client.users.fetch(process.env.ADMIN_ID).then((user) => {
       user.send(messages.join('\n'));
     });
