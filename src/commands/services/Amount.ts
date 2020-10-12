@@ -1,170 +1,182 @@
 import Discord from 'discord.js';
 import AsctiiTable from 'ascii-table';
-import { ROLES, serverConfig, Servers } from '../../constants';
+import { serverConfig, Servers } from '../../constants';
 import db from '../../db';
 import Command from '../Command';
 
 export class Amount extends Command {
   constructor(discordClient: Discord.Client) {
-    super(discordClient, (msg, trimmedMsg) => {
+    super(discordClient, async (msg, trimmedMsg) => {
       const isNumberMsg = !isNaN(Number(trimmedMsg));
 
       if (
+        // Not number
         !isNumberMsg
+        // Allow clear?
         && !trimmedMsg.includes('clear')
-        && (msg.member?.id && !['298673420181438465', '763721404134588447'].includes(msg.member.id))
       ) {
-        msg.delete().then(() => {
-          msg.author.createDM().then((dmChannel) => {
-            dmChannel.send('Your message was removed because you can only send the amount of boosts in this channel.');
-          });
-        });
+        msg.delete();
+
+        const dmChannel = await msg.author.createDM();
+        dmChannel.send('Your message was removed because you can only send the amount of boosts in this channel.');
       }
 
       return isNumberMsg;
     }, {
+      cooldown: 0,
       channels: serverConfig.map((server) => server.channelId),
     });
 
-    this.onCommand((msg) => {
+    this.onCommand(async (msg) => {
       const amount = Number(msg.content);
-      const serverRole = msg.member?.roles.cache.filter((role) => {
+      const member = await msg.member?.fetch();
+
+      if (!member) {
+        console.error('Error (Amount): Something went wrong fetching member of the message!');
+        console.error({ msg });
+
+        this.onError(msg);
+
+        return;
+      }
+
+      const serverRole = member.roles.cache.filter((role) => {
         return serverConfig.map((server) => server.roleId).includes(role.id);
       });
 
-      if (msg.member?.id && serverRole) {
-        const rolesArray = Array.from(serverRole);
-        const playerServerName = rolesArray[0][1].name.toLowerCase() as Servers;
+      if (!msg.member?.id || !serverRole) {
+        console.error('Error (Amount): No member id or serverRole.');
+        console.error({ memberId: msg.member?.id });
+        console.error({ serverRole: JSON.stringify(serverRole, null, 2) });
 
-        console.log('-- Amount command called ---');
-        console.log('By:', msg.member.displayName);
-        console.log('Roles:', rolesArray.map((roles) => roles[1].name).join(', '));
-        console.log(JSON.stringify(rolesArray, null, 2));
-        console.log('playerServerName:', playerServerName);
+        this.onError(msg);
 
-        if (!serverConfig.map((server) => server.roleId).includes(rolesArray[0][1].id)) {
-          console.error('Error: Something went wrong grabbing server role!');
-          console.error({ rolesArray });
-          console.error({ member: msg.member });
+        return;
+      }
 
-          msg.member.createDM().then((dmChannel) => {
-            dmChannel.send('Something went wrong when trying to add your count. The server admin has been notified.');
-            this.sendDMToAdmin('Error adding amount to server', JSON.stringify(msg.member), JSON.stringify(rolesArray));
-          });
+      const rolesArray = Array.from(serverRole);
+      const playerServerName = rolesArray[0][1].name.toLowerCase() as Servers;
 
-          return;
+      if (!serverConfig.map((server) => server.roleId).includes(rolesArray[0][1].id)) {
+        console.error('Error (Amount): Something went wrong grabbing server role.');
+        console.error({ member: msg.member });
+        console.error({ rolesArray });
+
+        this.onError(msg);
+
+        return;
+      }
+
+      let boostServerName = '' as Servers;
+      for (const server of serverConfig) {
+        if (msg.channel.id === server.channelId) {
+          boostServerName = server.name.toLowerCase() as Servers;
         }
+      }
 
-        let boostServerName = '' as Servers;
-        for (const server of serverConfig) {
-          if (msg.channel.id === server.channelId) {
-            boostServerName = server.name.toLowerCase() as Servers;
-          }
-        }
+      if (!boostServerName) {
+        console.error('Error (Amount): No boostServerName found.');
+        console.error({ boostServerName });
 
-        if (!boostServerName) {
-          console.error('No boostServerName found');
-          return;
-        }
+        this.onError(msg);
 
-        const serverValue = db.get('servers')
-          .find({ name: boostServerName })
-          .value();
+        return;
+      }
 
-        db.get('servers')
-          .find({ name: boostServerName })
+      const serverValue = db.get('servers')
+        .find({ name: boostServerName })
+        .value();
+
+      db.get('servers')
+        .find({ name: boostServerName })
+        .assign({
+          total: serverValue.total + amount,
+          from: {
+            ...serverValue.from,
+            [playerServerName]: serverValue.from[playerServerName] + amount,
+          },
+        })
+        .write();
+
+      const boostServerValue = db.get('servers')
+        .find({ name: boostServerName })
+        .value();
+
+      const table = new AsctiiTable();
+      table
+        .removeBorder()
+        .setHeading('Server', '', 'Boost Server', 'Boosted');
+
+      let serverFromName: Servers;
+      for (serverFromName in boostServerValue.from) {
+        serverFromName = serverFromName.toLowerCase() as Servers;
+        const serverFromBoostAmount = boostServerValue.from[serverFromName];
+
+        if (serverFromName == boostServerName) continue;
+
+        table.addRow(serverFromName, '->', boostServerName, serverFromBoostAmount);
+      }
+
+      msg.channel.send(`Total ${boostServerName} = ${boostServerValue.total}\n` + '```' + table.toString() + '```');
+
+
+      // Update player stats
+      const playerValue = db.get('players')
+        .find({ memberId: msg.member.id })
+        .value();
+
+      if (playerValue) {
+        db.get('players')
+          .find({ memberId: msg.member.id })
           .assign({
-            total: serverValue.total + amount,
-            from: {
-              ...serverValue.from,
-              [playerServerName]: serverValue.from[playerServerName] + amount,
-            },
+            [boostServerName]: playerValue[boostServerName] + amount,
           })
           .write();
-
-        const boostServerValue = db.get('servers')
-          .find({ name: boostServerName })
-          .value();
-
-        const table = new AsctiiTable();
-        table
-          .removeBorder()
-          .setHeading('Server', '', 'Boost Server', 'Boosted');
-        // let resultMsg = `Total ${boostServerName} = ${boostServerValue.total}`;
-
-        let serverFromName: Servers;
-        for (serverFromName in boostServerValue.from) {
-          serverFromName = serverFromName.toLowerCase() as Servers;
-          const serverFromBoostAmount = boostServerValue.from[serverFromName];
-
-          if (serverFromName == boostServerName) continue;
-
-          // resultMsg += `\n${serverFromName} -> ${boostServerName} = ${serverFrom}`;
-          table.addRow(serverFromName, '->', boostServerName, serverFromBoostAmount);
+      } else {
+        const serverAmounts = {} as Record<Servers, number>;
+        for (const server of serverConfig) {
+          serverAmounts[server.name] = 0;
         }
 
-        // msg.channel.send(resultMsg);
-        msg.channel.send(`Total ${boostServerName} = ${boostServerValue.total}\n` + '```' + table.toString() + '```');
+        serverAmounts[boostServerName] = amount;
 
-
-        // Update player stats
-        const playerValue = db.get('players')
-          .find({ memberId: msg.member.id })
-          .value();
-
-        if (playerValue) {
-          db.get('players')
-            .find({ memberId: msg.member.id })
-            .assign({
-              [boostServerName]: playerValue[boostServerName] + amount,
-            })
-            .write();
-        } else {
-          const serverAmounts = {} as Record<Servers, number>;
-          for (const server of serverConfig) {
-            serverAmounts[server.name] = 0;
-          }
-
-          serverAmounts[boostServerName] = amount;
-
-          db.get('players')
-            .push({
-              memberId: msg.member.id,
-              name: msg.member.displayName,
-              server: playerServerName,
-              ...serverAmounts,
-            })
-            .write();
-        }
-
-        // Check if name changed
-        if (playerValue && playerValue.name !== msg.member.displayName) {
-          db.get('players')
-            .find({ memberId: msg.member.id })
-            .assign({ name: msg.member.displayName })
-            .write();
-        }
-
-        // Send message to player showing his total boosts
-        // msg.member.createDM().then((dmChannel) => {
-        //   const playerValue = db.get('players')
-        //     .find({ memberId: msg.member?.id })
-        //     .value();
-
-        //   const table = new AsctiiTable()
-        //     .removeBorder()
-        //     .setHeading('Server', '', 'Boost Server', 'Boosted');
-
-        //   let key: keyof Player;
-        //   for (key in playerValue) {
-        //     if (typeof playerValue[key] === 'number') {
-        //       table.addRow(key, '->', boostServerName, playerValue[key]);
-        //     }
-        //   }
-
-        //   dmChannel.send('Your current total for the week:\n' + '```' + table.toString() + '```');
-        // });
+        db.get('players')
+          .push({
+            memberId: msg.member.id,
+            name: msg.member.displayName,
+            server: playerServerName,
+            ...serverAmounts,
+          })
+          .write();
       }
+
+      // Check if name changed
+      if (playerValue && playerValue.name !== msg.member.displayName) {
+        db.get('players')
+          .find({ memberId: msg.member.id })
+          .assign({ name: msg.member.displayName })
+          .write();
+      }
+
+      // Send message to player showing his total boosts
+      // msg.member.createDM().then((dmChannel) => {
+      //   const playerValue = db.get('players')
+      //     .find({ memberId: msg.member?.id })
+      //     .value();
+
+      //   const table = new AsctiiTable()
+      //     .removeBorder()
+      //     .setHeading('Server', '', 'Boost Server', 'Boosted');
+
+      //   let key: keyof Player;
+      //   for (key in playerValue) {
+      //     if (typeof playerValue[key] === 'number') {
+      //       table.addRow(key, '->', boostServerName, playerValue[key]);
+      //     }
+      //   }
+
+      //   dmChannel.send('Your current total for the week:\n' + '```' + table.toString() + '```');
+      // });
     });
   }
 }
