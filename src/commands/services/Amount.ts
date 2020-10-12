@@ -40,6 +40,19 @@ export class Amount extends Command {
         const rolesArray = Array.from(serverRole);
         const playerServerName = rolesArray[0][1].name.toLowerCase() as Servers;
 
+        if ([ROLES.admin, ROLES.leader, ROLES.everyone].includes(rolesArray[0][1].id)) {
+          console.error('Error: Something went wrong grabbing server role!');
+          console.error({ rolesArray });
+          console.error({ member: msg.member });
+
+          msg.member.createDM().then((dmChannel) => {
+            dmChannel.send('Something went wrong when trying to add your count. The server admin has been notified.');
+            this.sendDMToAdmin('Error adding amount to server', JSON.stringify(msg.member), JSON.stringify(rolesArray));
+          });
+
+          return;
+        }
+
         let boostServerName = '' as Servers;
         for (const server of serverConfig) {
           if (msg.channel.id === server.channelId) {

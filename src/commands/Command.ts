@@ -106,6 +106,12 @@ export default abstract class Command {
     console.error(`Error '${this.listen}':`, err);
   }
 
+  protected sendDMToAdmin = (...messages: string[]) => {
+    this.client.users.fetch(process.env.ADMIN_ID).then((user) => {
+      user.send(messages.join('\n'));
+    });
+  }
+
 
   private hasRequiredRole = async (msg: Discord.Message): Promise<boolean> => {
     if (this.options.roles && msg.guild) {
