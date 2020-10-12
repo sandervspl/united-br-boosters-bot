@@ -23,7 +23,7 @@ export class Amount extends Command {
 
       return isNumberMsg;
     }, {
-      channels: serverConfig.map((server) => server.channelId).concat(['763723790407696454', '763749549918912575']),
+      channels: serverConfig.map((server) => server.channelId),
     });
 
     this.onCommand((msg) => {
@@ -33,8 +33,6 @@ export class Amount extends Command {
           role.id !== ROLES.admin
           && role.id !== ROLES.leader
           && role.id !== ROLES.everyone
-          && role.id !== '763723790407696454'
-          && role.id !== '763749549918912575'
         );
       });
 
