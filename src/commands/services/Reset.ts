@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import { ROLES, serverConfig } from '../../constants';
+import { channelIds, ROLES } from '../../constants';
 // import db from '../../db';
 import Command from '../Command';
 
@@ -10,7 +10,7 @@ export class Reset extends Command {
   constructor(discordClient: Discord.Client) {
     super(discordClient, 'reset', {
       prefix: '!',
-      channels: serverConfig.map((server) => server.channelId).concat(['763723790407696454', '763749549918912575']),
+      channels: channelIds,
       roles: [ROLES.admin, ROLES.leader, '763739953283727390', '763740020296646667'],
     });
 

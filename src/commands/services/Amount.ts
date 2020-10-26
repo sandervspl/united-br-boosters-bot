@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import AsctiiTable from 'ascii-table';
-import { serverConfig, Servers } from '../../constants';
+import { flatten as _flatten } from 'lodash';
+import { roleIds, serverConfig, Servers } from '../../constants';
 import db from '../../db';
 import Command from '../Command';
 
@@ -12,8 +13,10 @@ export class Amount extends Command {
       if (
         // Not number
         !isNumberMsg
-        // Allow clear?
+        // Allow clear
         && !trimmedMsg.includes('clear')
+        // Allow bot
+        && msg.member?.id !== process.env.BOT_ID
       ) {
         msg.delete();
 
@@ -24,7 +27,7 @@ export class Amount extends Command {
       return isNumberMsg;
     }, {
       cooldown: 0,
-      channels: serverConfig.map((server) => server.channelId),
+      channels: _flatten(serverConfig.map((server) => server.channelId)),
     });
 
     this.onCommand(async (msg) => {
@@ -41,7 +44,7 @@ export class Amount extends Command {
       }
 
       const serverRole = member.roles.cache.filter((role) => {
-        return serverConfig.map((server) => server.roleId).includes(role.id);
+        return roleIds.includes(role.id);
       });
 
       if (!msg.member?.id || !serverRole) {
@@ -57,7 +60,7 @@ export class Amount extends Command {
       const rolesArray = Array.from(serverRole);
       const playerServerName = rolesArray[0][1].name.toLowerCase() as Servers;
 
-      if (!serverConfig.map((server) => server.roleId).includes(rolesArray[0][1].id)) {
+      if (!roleIds.includes(rolesArray[0][1].id)) {
         console.error('Error (Amount): Something went wrong grabbing server role.');
         console.error({ member: msg.member });
         console.error({ rolesArray });
@@ -69,7 +72,7 @@ export class Amount extends Command {
 
       let boostServerName = '' as Servers;
       for (const server of serverConfig) {
-        if (msg.channel.id === server.channelId) {
+        if (server.channelId.includes(msg.channel.id)) {
           boostServerName = server.name.toLowerCase() as Servers;
         }
       }

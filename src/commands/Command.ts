@@ -57,7 +57,6 @@ export default abstract class Command {
     }
 
     if (typeof this.listen == 'string') {
-
       match = message.startsWith(this.listen);
     }
 
@@ -77,10 +76,6 @@ export default abstract class Command {
       this.startCooldown();
     }
   });
-
-  protected isFromDeveloper = (msg: Discord.Message): boolean => {
-    return msg.author.id === '77783102469967872';
-  }
 
   protected getArgs = (content: string): string[] => {
     return content.split(' ').slice(1);
