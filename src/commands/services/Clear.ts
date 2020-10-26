@@ -11,12 +11,24 @@ export class Clear extends Command {
     });
 
     this.onCommand((msg) => {
-      console.log('!clear command');
-      console.log({ msg });
-
       msg.channel.messages.fetch().then((messages) => {
-        console.log({ messages });
-        (msg.channel as Discord.TextChannel).bulkDelete(messages.size - 1);
+        const deletableMessages = messages.filter((msg) => {
+          const diff = Math.floor(Date.now() - msg.createdAt.getTime());
+          const day = 1000 * 60 * 60 * 24;
+          const days = Math.floor(diff / day);
+
+          return msg.deletable
+          // Discord only allows bulk delete messages younger than 14 days old
+          && days < 14
+          && (
+            // Remove number messages
+            !isNaN(Number(msg.content))
+            // Or bot messages
+            || msg.author.id === process.env.BOT_ID
+          );
+        });
+
+        (msg.channel as Discord.TextChannel).bulkDelete(deletableMessages.size + 1);
       });
     });
   }

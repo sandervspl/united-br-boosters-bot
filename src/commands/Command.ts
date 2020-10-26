@@ -2,7 +2,6 @@ import Discord from 'discord.js';
 import moment from 'moment';
 import _ from 'lodash';
 import { O } from 'ts-toolbelt';
-import env from 'helpers/env';
 import { Options, CommandCallback } from './types';
 
 type ListenFn = (msg: Discord.Message, trimmedMsg: string) => boolean | Promise<boolean>;
@@ -28,6 +27,7 @@ export default abstract class Command {
   protected onCommand = (cb: CommandCallback) => this.client.on('message', async (msg) => {
     if (this.options.channels && this.options.channels.length > 0) {
       if (!this.options.channels.includes(msg.channel.id)) {
+        msg.author.send('This command does not work in this channel.');
         return;
       }
     }
@@ -41,7 +41,7 @@ export default abstract class Command {
 
     // Check if message starts with the command prefix
     if (this.options.prefix) {
-      if (!msg.content.startsWith(this.options.prefix)) {
+      if (!message.startsWith(this.options.prefix)) {
         return;
       }
 
@@ -64,10 +64,12 @@ export default abstract class Command {
       const hasRole = await this.hasRequiredRole(msg);
 
       if (!hasRole) {
+        msg.author.send('You do not have the permissions for this command.');
         return;
       }
 
       if (this.cooldowns.has(this.listen)) {
+        msg.author.send('This command is on cooldown. Please wait and then try again.');
         return;
       }
 
@@ -101,8 +103,8 @@ export default abstract class Command {
         return false;
       }
 
-      const memberRoles = member.roles.cache.map((role) => role.name.toLowerCase());
-      const hasRequiredRole = _.intersection(this.options.roles, memberRoles).length > 0;
+      const memberRoleIds = member.roles.cache.map((role) => role.id);
+      const hasRequiredRole = _.intersection(this.options.roles, memberRoleIds).length > 0;
 
       return hasRequiredRole;
     }
