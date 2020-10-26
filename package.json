@@ -1,6 +1,6 @@
 {
   "name": "united-br-boosters-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Code for united br boosters bot",
   "main": "index.js",
   "scripts": {
