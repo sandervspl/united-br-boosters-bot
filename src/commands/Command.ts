@@ -26,21 +26,6 @@ export default abstract class Command {
 
 
   protected onCommand = (cb: CommandCallback) => this.client.on('message', async (msg) => {
-    if (env.isDevelopment && !this.isFromDeveloper(msg)) {
-      return;
-    }
-
-    if (
-      env.isProduction && (
-        // Testing channel
-        msg.channel.id === '561859968681115658'
-        // Test suite channel
-        || msg.channel.id === '611163871398592521'
-      )
-    ) {
-      return;
-    }
-
     if (this.options.channels && this.options.channels.length > 0) {
       if (!this.options.channels.includes(msg.channel.id)) {
         return;
