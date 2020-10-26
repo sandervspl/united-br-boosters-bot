@@ -25,13 +25,6 @@ export default abstract class Command {
 
 
   protected onCommand = (cb: CommandCallback) => this.client.on('message', async (msg) => {
-    if (this.options.channels && this.options.channels.length > 0) {
-      if (!this.options.channels.includes(msg.channel.id)) {
-        msg.author.send('This command does not work in this channel.');
-        return;
-      }
-    }
-
     // Clean up message
     const content = msg.content
       .toLowerCase()
@@ -47,6 +40,13 @@ export default abstract class Command {
 
       // Remove prefix
       message = content.slice(1);
+    }
+
+    if (this.options.channels && this.options.channels.length > 0) {
+      if (!this.options.channels.includes(msg.channel.id)) {
+        msg.author.send('This command does not work in this channel.');
+        return;
+      }
     }
 
     // Check if the message we received is the same as what we listen to
