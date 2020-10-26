@@ -12,6 +12,10 @@ export const ROLES = {
   admin: '763739953283727390',
   leader: '763740020296646667',
   everyone: '611155317115584512',
+  dev: {
+    admin: '763739953283727390',
+    leader: '763740020296646667',
+  },
 };
 
 export const serverConfig: ServerConfig[] = [

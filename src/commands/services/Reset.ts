@@ -11,7 +11,7 @@ export class Reset extends Command {
     super(discordClient, 'reset', {
       prefix: '!',
       channels: channelIds,
-      roles: [ROLES.admin, ROLES.leader, '763739953283727390', '763740020296646667'],
+      roles: [ROLES.admin, ROLES.leader, ROLES.dev.admin, ROLES.dev.leader],
     });
 
     this.onCommand((msg) => {
