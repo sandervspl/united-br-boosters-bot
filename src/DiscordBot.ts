@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import commands from './commands/services';
-// import services from './services';
+import services from './services';
 
 class DiscordBot {
   public readonly client = new Discord.Client();
@@ -21,14 +21,14 @@ class DiscordBot {
         });
       }
 
-      // this.initServices();
+      this.initServices();
       this.initCommands();
     });
   }
 
-  // private initServices = () => {
-  //   services.forEach((services) => new services(this.client));
-  // }
+  private initServices = () => {
+    services.forEach((services) => new services(this.client));
+  }
 
   private initCommands = () => {
     commands.forEach((command) => new command(this.client));

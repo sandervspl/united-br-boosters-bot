@@ -1,1 +1,5 @@
-export default [] as const;
+import { WelcomeService } from './Welcome';
+
+export default [
+  WelcomeService,
+] as const;
