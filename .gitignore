@@ -3,6 +3,6 @@
 dist/
 node_modules/
 
-.secretenv
 .env
+.dev.env
 db.json
