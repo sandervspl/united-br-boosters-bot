@@ -59,6 +59,14 @@ export default abstract class Command {
         if (!this.options.channels.includes(msg.channel.id)) {
           if (this.options.prefix && msg.author.id !== process.env.BOT_ID) {
             msg.author.send('This command does not work in this channel.');
+            console.error({
+              listen: this.listen,
+              msgContent: msg.content,
+              message,
+              author: msg.author,
+              channels: this.options.channels,
+              channel: msg.channel.id,
+            });
           }
 
           return;
@@ -69,6 +77,15 @@ export default abstract class Command {
 
       if (!hasRole) {
         if (this.options.prefix && msg.author.id !== process.env.BOT_ID) {
+          console.error('Error (Command): Incorrect permissions.');
+          console.error({
+            listen: this.listen,
+            msgContent: msg.content,
+            message,
+            author: msg.author,
+            hasRole,
+          });
+
           msg.author.send('You do not have the permissions for this command.');
         }
 
@@ -78,6 +95,13 @@ export default abstract class Command {
       if (this.cooldowns.has(this.listen)) {
         if (this.options.prefix && msg.author.id !== process.env.BOT_ID) {
           msg.author.send('This command is on cooldown. Please wait and then try again.');
+          console.error({
+            listen: this.listen,
+            msgContent: msg.content,
+            message,
+            author: msg.author,
+            cooldowns: this.cooldowns,
+          });
         }
 
         return;
@@ -96,6 +120,13 @@ export default abstract class Command {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected onError = (msg: Discord.Message) => {
     msg.channel.send('Oops, something went wrong. 🤖 The server admin has been notified.');
+    console.error({
+      listen: this.listen,
+      msgContent: msg.content,
+      author: msg.author,
+      channels: this.options.channels,
+      msg,
+    });
   }
 
   protected sendDMToAdmin = (...messages: (string | undefined)[]) => {

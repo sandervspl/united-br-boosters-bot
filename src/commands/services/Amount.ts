@@ -18,10 +18,12 @@ export class Amount extends Command {
         // Allow bot
         && msg.author.id !== process.env.BOT_ID
       ) {
+        console.error('(Amount) DELETE triggered');
+        console.error({ isNumberMsg, trimmedMsg, author: msg.author });
         // msg.delete();
 
         if (msg.author.id !== process.env.BOT_ID) {
-          msg.author.send('Your message was removed because you can only send the amount of boosts in this channel.');
+          // msg.author.send('Your message was removed because you can only send the amount of boosts in this channel.');
         }
       }
 
@@ -54,8 +56,7 @@ export class Amount extends Command {
 
       if (!msg.member?.id || !serverRole) {
         console.error('Error (Amount): No member id or serverRole.');
-        console.error({ memberId: msg.member?.id });
-        console.error({ serverRole: JSON.stringify(serverRole, null, 2) });
+        console.error({ memberId: msg.member?.id, serverRole: JSON.stringify(serverRole, null, 2) });
 
         this.onError(msg);
 
@@ -67,8 +68,7 @@ export class Amount extends Command {
 
       if (!roleIds.includes(rolesArray[0][1].id)) {
         console.error('Error (Amount): Something went wrong grabbing server role.');
-        console.error({ member: msg.member });
-        console.error({ rolesArray });
+        console.error({ member: msg.member, rolesArray });
 
         this.onError(msg);
 
