@@ -92,7 +92,6 @@ ssh $USER@$HOST << EOF
 
     mv $PDIR*/db.json /var/api/db.json
 
-    rm -rf $PDIR*
     mkdir -p $PDIR-$VERSION;
     chown $USER:$USER $PDIR-$VERSION;
     chown $USER:$USER /var/api;
