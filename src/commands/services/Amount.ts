@@ -16,11 +16,11 @@ export class Amount extends Command {
         // Allow clear
         && !trimmedMsg.includes('clear')
         // Allow bot
-        && msg.member?.id !== process.env.BOT_ID
+        && msg.author.id !== process.env.BOT_ID
       ) {
         msg.delete();
 
-        if (msg.member?.id !== process.env.BOT_ID) {
+        if (msg.author.id !== process.env.BOT_ID) {
           msg.author.send('Your message was removed because you can only send the amount of boosts in this channel.');
         }
       }

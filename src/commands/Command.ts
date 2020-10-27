@@ -38,16 +38,6 @@ export default abstract class Command {
         return;
       }
 
-      if (this.options.channels && this.options.channels.length > 0) {
-        if (!this.options.channels.includes(msg.channel.id)) {
-          if (msg.author.id !== process.env.BOT_ID) {
-            msg.author.send('This command does not work in this channel.');
-          }
-
-          return;
-        }
-      }
-
       // Remove prefix
       message = content.slice(1);
     }
@@ -64,10 +54,21 @@ export default abstract class Command {
     }
 
     if (match) {
+      // Channel check
+      if (this.options.channels && this.options.channels.length > 0) {
+        if (!this.options.channels.includes(msg.channel.id)) {
+          if (this.options.prefix && msg.author.id !== process.env.BOT_ID) {
+            msg.author.send('This command does not work in this channel.');
+          }
+
+          return;
+        }
+      }
+
       const hasRole = await this.hasRequiredRole(msg);
 
       if (!hasRole) {
-        if (msg.author.id !== process.env.BOT_ID) {
+        if (this.options.prefix && msg.author.id !== process.env.BOT_ID) {
           msg.author.send('You do not have the permissions for this command.');
         }
 
@@ -75,7 +76,7 @@ export default abstract class Command {
       }
 
       if (this.cooldowns.has(this.listen)) {
-        if (msg.author.id !== process.env.BOT_ID) {
+        if (this.options.prefix && msg.author.id !== process.env.BOT_ID) {
           msg.author.send('This command is on cooldown. Please wait and then try again.');
         }
 
