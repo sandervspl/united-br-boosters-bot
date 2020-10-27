@@ -43,6 +43,10 @@ export class Amount extends Command {
         return;
       }
 
+      if (!this.options.channels?.includes(msg.channel.id)) {
+        return false;
+      }
+
       const serverRole = member.roles.cache.filter((role) => {
         return roleIds.includes(role.id);
       });
@@ -54,7 +58,7 @@ export class Amount extends Command {
 
         this.onError(msg);
 
-        return;
+        return false;
       }
 
       const rolesArray = Array.from(serverRole);
@@ -67,7 +71,7 @@ export class Amount extends Command {
 
         this.onError(msg);
 
-        return;
+        return false;
       }
 
       let boostServerName = '' as Servers;
@@ -83,7 +87,7 @@ export class Amount extends Command {
 
         this.onError(msg);
 
-        return;
+        return false;
       }
 
 
