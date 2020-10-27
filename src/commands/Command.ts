@@ -40,7 +40,10 @@ export default abstract class Command {
 
       if (this.options.channels && this.options.channels.length > 0) {
         if (!this.options.channels.includes(msg.channel.id)) {
-          msg.author.send('This command does not work in this channel.');
+          if (msg.author.id !== process.env.BOT_ID) {
+            msg.author.send('This command does not work in this channel.');
+          }
+
           return;
         }
       }
@@ -64,12 +67,18 @@ export default abstract class Command {
       const hasRole = await this.hasRequiredRole(msg);
 
       if (!hasRole) {
-        msg.author.send('You do not have the permissions for this command.');
+        if (msg.author.id !== process.env.BOT_ID) {
+          msg.author.send('You do not have the permissions for this command.');
+        }
+
         return;
       }
 
       if (this.cooldowns.has(this.listen)) {
-        msg.author.send('This command is on cooldown. Please wait and then try again.');
+        if (msg.author.id !== process.env.BOT_ID) {
+          msg.author.send('This command is on cooldown. Please wait and then try again.');
+        }
+
         return;
       }
 

@@ -20,8 +20,9 @@ export class Amount extends Command {
       ) {
         msg.delete();
 
-        const dmChannel = await msg.author.createDM();
-        dmChannel.send('Your message was removed because you can only send the amount of boosts in this channel.');
+        if (msg.member?.id !== process.env.BOT_ID) {
+          msg.author.send('Your message was removed because you can only send the amount of boosts in this channel.');
+        }
       }
 
       return isNumberMsg;
