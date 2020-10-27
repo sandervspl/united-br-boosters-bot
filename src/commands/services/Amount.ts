@@ -7,25 +7,8 @@ import Command from '../Command';
 
 export class Amount extends Command {
   constructor(discordClient: Discord.Client) {
-    super(discordClient, async (msg, trimmedMsg) => {
+    super(discordClient, async (_, trimmedMsg) => {
       const isNumberMsg = !isNaN(Number(trimmedMsg));
-
-      if (
-        // Not number
-        !isNumberMsg
-        // Allow clear
-        && !trimmedMsg.includes('clear')
-        // Allow bot
-        && msg.author.id !== process.env.BOT_ID
-      ) {
-        console.error('(Amount) DELETE triggered');
-        console.error({ isNumberMsg, trimmedMsg, author: msg.author });
-        // msg.delete();
-
-        if (msg.author.id !== process.env.BOT_ID) {
-          // msg.author.send('Your message was removed because you can only send the amount of boosts in this channel.');
-        }
-      }
 
       return isNumberMsg;
     }, {
