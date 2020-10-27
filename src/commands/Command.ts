@@ -42,13 +42,6 @@ export default abstract class Command {
       message = content.slice(1);
     }
 
-    if (this.options.channels && this.options.channels.length > 0) {
-      if (!this.options.channels.includes(msg.channel.id)) {
-        msg.author.send('This command does not work in this channel.');
-        return;
-      }
-    }
-
     // Check if the message we received is the same as what we listen to
     let match = false;
 
@@ -66,6 +59,13 @@ export default abstract class Command {
       if (!hasRole) {
         msg.author.send('You do not have the permissions for this command.');
         return;
+      }
+
+      if (this.options.channels && this.options.channels.length > 0) {
+        if (!this.options.channels.includes(msg.channel.id)) {
+          msg.author.send('This command does not work in this channel.');
+          return;
+        }
       }
 
       if (this.cooldowns.has(this.listen)) {
