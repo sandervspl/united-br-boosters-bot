@@ -18,7 +18,7 @@ export class Amount extends Command {
         // Allow bot
         && msg.author.id !== process.env.BOT_ID
       ) {
-        msg.delete();
+        // msg.delete();
 
         if (msg.author.id !== process.env.BOT_ID) {
           msg.author.send('Your message was removed because you can only send the amount of boosts in this channel.');
