@@ -1,12 +1,13 @@
 import { flatten as _flatten } from 'lodash';
 
-export type Servers = 'firemaw' | 'gehennas' | 'mograine' | 'lucifron' | 'golemagg';
-
 type ServerConfig = {
-  name: Servers;
+  name: string;
   channelId: string[];
   roleId: string[];
 }
+
+// dotenv is being fucky and i cba to spend time fixing it
+export const SERVERS = 'firemaw,gehennas,mograine,golemagg';
 
 export const ROLES = {
   admin: '763739953283727390',
@@ -35,11 +36,6 @@ export const serverConfig: ServerConfig[] = [
     name: 'mograine',
     channelId: ['763493504273088544'],
     roleId: ['763488051766362122'],
-  },
-  {
-    name: 'lucifron',
-    channelId: ['763493570396028948'],
-    roleId: ['763487967209455616'],
   },
   {
     name: 'golemagg',

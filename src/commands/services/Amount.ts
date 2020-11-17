@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import AsctiiTable from 'ascii-table';
 import { flatten as _flatten } from 'lodash';
-import { roleIds, serverConfig, Servers } from '../../constants';
+import { roleIds, serverConfig } from '../../constants';
 import db from '../../db';
 import Command from '../Command';
 
@@ -47,7 +47,7 @@ export class Amount extends Command {
       }
 
       const rolesArray = Array.from(serverRole);
-      const playerServerName = rolesArray[0][1].name.toLowerCase() as Servers;
+      const playerServerName = rolesArray[0][1].name.toLowerCase();
 
       if (!roleIds.includes(rolesArray[0][1].id)) {
         console.error('Error (Amount): Something went wrong grabbing server role.');
@@ -58,10 +58,10 @@ export class Amount extends Command {
         return false;
       }
 
-      let boostServerName = '' as Servers;
+      let boostServerName = '';
       for (const server of serverConfig) {
         if (server.channelId.includes(msg.channel.id)) {
-          boostServerName = server.name.toLowerCase() as Servers;
+          boostServerName = server.name.toLowerCase();
         }
       }
 
@@ -102,9 +102,8 @@ export class Amount extends Command {
         .removeBorder()
         .setHeading('Server', '', 'Boost Server', 'Boosted');
 
-      let serverFromName: Servers;
-      for (serverFromName in boostServerValue.from) {
-        serverFromName = serverFromName.toLowerCase() as Servers;
+      for (let serverFromName in boostServerValue.from) {
+        serverFromName = serverFromName.toLowerCase();
         const serverFromBoostAmount = boostServerValue.from[serverFromName];
 
         if (serverFromName == boostServerName) continue;
@@ -113,45 +112,6 @@ export class Amount extends Command {
       }
 
       msg.channel.send(`Total ${boostServerName} = ${boostServerValue.total}\n` + '```' + table.toString() + '```');
-
-
-      // Update player stats
-      // const playerValue = db.get('players')
-      //   .find({ memberId: msg.member.id })
-      //   .value();
-
-      // if (playerValue) {
-      //   db.get('players')
-      //     .find({ memberId: msg.member.id })
-      //     .assign({
-      //       [boostServerName]: playerValue[boostServerName] + amount,
-      //     })
-      //     .write();
-      // } else {
-      //   const serverAmounts = {} as Record<Servers, number>;
-      //   for (const server of serverConfig) {
-      //     serverAmounts[server.name] = 0;
-      //   }
-
-      //   serverAmounts[boostServerName] = amount;
-
-      //   db.get('players')
-      //     .push({
-      //       memberId: msg.member.id,
-      //       name: msg.member.displayName,
-      //       server: playerServerName,
-      //       ...serverAmounts,
-      //     })
-      //     .write();
-      // }
-
-      // // Check if name changed
-      // if (playerValue && playerValue.name !== msg.member.displayName) {
-      //   db.get('players')
-      //     .find({ memberId: msg.member.id })
-      //     .assign({ name: msg.member.displayName })
-      //     .write();
-      // }
     });
   }
 }
