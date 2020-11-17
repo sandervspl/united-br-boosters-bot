@@ -18,8 +18,13 @@ export class BackupDBService {
 
     const fileName = `db_${from}-${to}.json`;
 
-    fs.renameSync(path.resolve('db.json'), path.resolve('..', fileName));
+    // Move file to backup folder
+    fs.renameSync(
+      path.resolve('db.json'),
+      path.resolve('..', 'united-br-boosters-backups', fileName),
+    );
 
+    // Reset db values
     resetDB();
   }
 }
